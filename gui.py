@@ -49,12 +49,8 @@ class LoginWindow:
 
     def ok_action(self):
         try:        
-            # credentials = {'user'     : self.user_input.get(),
-            #                'password' : self.pw_input.get(),
-            #                'database' : 'csci403',
-            #                'host'     : 'flowers.mines.edu' }
-            credentials = {'user'     : 'npampe',
-                           'password' : 'Magicle101',
+            credentials = {'user'     : self.user_input.get(),
+                           'password' : self.pw_input.get(),
                            'database' : 'csci403',
                            'host'     : 'flowers.mines.edu' }
             self.db = pg8000.connect(**credentials)
