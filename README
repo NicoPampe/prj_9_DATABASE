@@ -1,5 +1,11 @@
 Dataset ideas
 
+For now, first run the schema.sql than run the gui.py
+
+psql postgresql://<username>@flowers.mines.edu/csci403 <schema.sql> out.sql
+python3 gui.py
+
+
 Soccer (football because it's international) information: http://openfootball.github.io/
 Urbandictionary (largely NSFW): https://www.reddit.com/r/datasets/comments/63spoc/19gb_of_urban_dictionary_definitions_1999_may_2016/
 Game of thrones: https://www.kaggle.com/mylesoneill/game-of-thrones
