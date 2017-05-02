@@ -6,6 +6,8 @@ from tkinter import messagebox
 from tkinter import font
 import pg8000
 
+factorio_item_array = ['piercing-bullet-magazine','rocket','explosive-rocket','shotgun-shell','piercing-shotgun-shell','railgun-dart','poison-capsule','slowdown-capsule','basic-grenade','defender-capsule','distractor-capsule','destroyer-capsule','basic-electric-discharge-defense-remote','copper-plate','iron-plate','stone-brick','wood','wooden-chest','iron-stick','iron-axe','stone-furnace','boiler','steam-engine','iron-gear-wheel','electronic-circuit','basic-transport-belt','basic-mining-drill','burner-mining-drill','basic-inserter','burner-inserter','pipe','offshore-pump','copper-cable','small-electric-pole','pistol','submachine-gun','basic-bullet-magazine','basic-armor','radar','small-lamp','pipe-to-ground','assembling-machine-1','repair-pack','gun-turret','night-vision-equipment','energy-shield-equipment','energy-shield-mk2-equipment','battery-equipment','battery-mk2-equipment','solar-panel-equipment','fusion-reactor-equipment','basic-laser-defense-equipment','basic-electric-discharge-defense-equipment','basic-exoskeleton-equipment','basic-oil-processing','advanced-oil-processing','heavy-oil-cracking','light-oil-cracking','sulfuric-acid','plastic-bar','solid-fuel-from-light-oil','solid-fuel-from-petroleum-gas','solid-fuel-from-heavy-oil','sulfur','lubricant','empty-barrel','fill-crude-oil-barrel','empty-crude-oil-barrel','flame-thrower-ammo','steel-plate','long-handed-inserter','fast-inserter','smart-inserter','speed-module','speed-module-2','speed-module-3','productivity-module','productivity-module-2','productivity-module-3','effectivity-module','effectivity-module-2','effectivity-module-3','player-port','fast-transport-belt','express-transport-belt','solar-panel','assembling-machine-2','assembling-machine-3','car','straight-rail','curved-rail','diesel-locomotive','cargo-wagon','train-stop','rail-signal','heavy-armor','basic-modular-armor','power-armor','power-armor-mk2','iron-chest','steel-chest','smart-chest','wall','flame-thrower','land-mine','rocket-launcher','shotgun','combat-shotgun','railgun','science-pack-1','science-pack-2','science-pack-3','alien-science-pack','lab','red-wire','green-wire','basic-transport-belt-to-ground','fast-transport-belt-to-ground','express-transport-belt-to-ground','basic-splitter','fast-splitter','express-splitter','advanced-circuit','processing-unit','logistic-robot','construction-robot','logistic-chest-passive-provider','logistic-chest-active-provider','logistic-chest-storage','logistic-chest-requester','rocket-defense','roboport','steel-axe','big-electric-pole','substation','medium-electric-pole','basic-accumulator','steel-furnace','electric-furnace','basic-beacon','blueprint','deconstruction-planner','pumpjack','oil-refinery','engine-unit','electric-engine-unit','flying-robot-frame','explosives','battery','storage-tank','small-pump','chemical-plant','small-plane','laser-turret']
+
 # implements a simple login window
 class LoginWindow:
     def __init__(self, window):
@@ -47,11 +49,14 @@ class LoginWindow:
 
     def ok_action(self):
         try:        
-            credentials = {'user'     : self.user_input.get(),
-                           'password' : self.pw_input.get(),
+            # credentials = {'user'     : self.user_input.get(),
+            #                'password' : self.pw_input.get(),
+            #                'database' : 'csci403',
+            #                'host'     : 'flowers.mines.edu' }
+            credentials = {'user'     : 'npampe',
+                           'password' : 'Magicle101',
                            'database' : 'csci403',
                            'host'     : 'flowers.mines.edu' }
-
             self.db = pg8000.connect(**credentials)
             self.window.destroy()
         except pg8000.Error as e:
@@ -80,27 +85,42 @@ class Application:
         # search portion of GUI
         self.search_frame = Frame(window);
         self.search_frame.grid(row = 0, column = 0)
+        self.search_sb = Scrollbar(self.search_frame)
+        # self.search_sb.pack(side = RIGHT, fill = Y)
+        # self.search_lb = Listbox(self.search_frame, height = 10, width = 80, font = self.font, exportselection = 0)
+        # self.search_lb.pack()
+        # self.search_lb.config(yscrollcommand = self.search_sb.set)
+        # self.search_sb.config(command = self.search_lb.yview)
+
 
         self.current_search_results = []
-        self.factorio_item_input = {
-            'piercing-bullet-magazine': IntVar(),
-            'rocket': IntVar(),
-            'explosive-rocket': IntVar()
-        }
+        self.factorio_item_input = {}
+        for item in factorio_item_array:
+            self.factorio_item_input[item] = IntVar()
+            pass
+        
+        row = 0
+        column = 0
+        for item in factorio_item_array:
+            self.search_button = Checkbutton(self.search_frame, text=item,  variable = self.factorio_item_input[item], command = self.search_action).grid(row=row, column=column, sticky=W)
+            row += 1
+            if row==50:
+                row = 0
+                column += 1
+                pass
+            pass
 
-        self.search_button = Checkbutton(self.search_frame, text='Piercing-bullet-magazine',  variable = self.factorio_item_input['piercing-bullet-magazine'], command = self.search_action).grid(row=0, sticky=W)
-        self.search_button = Checkbutton(self.search_frame, text="Rocket",  variable = self.factorio_item_input['rocket'], command = self.search_action).grid(row=1, sticky=W)
-        self.search_button = Checkbutton(self.search_frame, text="Explosive-rocket",  variable = self.factorio_item_input['explosive-rocket'], command = self.search_action).grid(row=2, sticky=W)
+        self.search_button = Checkbutton(self.search_frame, text="Rocket",  variable = self.factorio_item_input['rocket'], command = self.search_action).grid(row=1, column = 0, sticky=W)
 
         # search results
-        self.results_frame = Frame(window)
-        self.results_frame.grid(row = 1, column = 0)
-        self.results_sb = Scrollbar(self.results_frame)
-        self.results_sb.pack(side = RIGHT, fill = Y)
-        self.results_lb = Listbox(self.results_frame, height = 10, width = 80, font = self.font, exportselection = 0)
-        self.results_lb.pack()
-        self.results_lb.config(yscrollcommand = self.results_sb.set)
-        self.results_sb.config(command = self.results_lb.yview)
+        # self.results_frame = Frame(window)
+        # self.results_frame.grid(row = 1, column = 0)
+        # self.results_sb = Scrollbar(self.results_frame)
+        # self.results_sb.pack(side = RIGHT, fill = Y)
+        # self.results_lb = Listbox(self.results_frame, height = 10, width = 80, font = self.font, exportselection = 0)
+        # self.results_lb.pack()
+        # self.results_lb.config(yscrollcommand = self.results_sb.set)
+        # self.results_sb.config(command = self.results_lb.yview)
 
         # search results listbox callbacks
         # self.results_lb.bind('<<ListboxSelect>>', self.album_select)
@@ -111,7 +131,22 @@ class Application:
             if var.get():
                 print('The item to look up: ' + str(item))
                 self.current_search_results.extend(self.search_by_item(str(item)))
-        print(self.current_search_results)
+
+        self.item_recusion(self.current_search_results)
+
+        print('\nfinished tree\n\n')
+
+
+    def item_recusion(self, items):
+        for item in items:
+            print(item)
+            if item[0] == 'copper-ore' or item[0] == 'iron-ore' or item[0] == 'coal' or item[0] == 'stone' or item[0] == 'raw-wood' or item[0] == 'water' or item[0] == 'crude-oil' or item[0] == 'alien-artifact':
+                print()
+            else:
+                additional_itesm = self.search_by_item(item[0])
+                self.item_recusion(additional_itesm)
+
+
 
     def album_select(self, event):
         if len(self.results_lb.curselection()):
@@ -260,7 +295,7 @@ class Application:
             return None
 
     def search_by_item(self, search_string):
-        query = """SELECT * FROM factorio_recipe 
+        query = """SELECT resources, amount FROM factorio_recipe 
                     WHERE recipe = (%s)"""
 
         try:
