@@ -17,4 +17,5 @@ CREATE TABLE factorio_recipe(
 	recipe TEXT, 
 	resources TEXT, 
 	amount TEXT); 
-\copy factorio_recipe(recipe, resources, amount) FROM 'factorio_recipe.csv' WITH (DELIMITER ',');
+/* \copy factorio_recipe(recipe, resources, amount) FROM 'factorio_recipe.csv' WITH (DELIMITER ','); */
+\copy factorio_recipe(recipe, resources, amount) FROM 'factorio_015_items.csv' WITH (DELIMITER ',');
