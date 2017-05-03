@@ -12,7 +12,7 @@ data["extend"] = function (data, t)
             cname = component[1] or component["name"]
             camt = component[2] or component["amount"]
             camt = camt/resultCount
-            file:write('"' .. recipe["name"] .. '","' .. cname .. '",' .. camt .. "\n")
+            file:write(recipe["name"] .. ',' .. cname .. ',' .. camt .. "\n")
             print('"' .. recipe["name"] .. '","' .. cname .. '",' .. camt)
         end
     end
