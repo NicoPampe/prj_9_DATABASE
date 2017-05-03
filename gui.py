@@ -5,6 +5,7 @@ from tkinter.ttk import *
 from tkinter import messagebox
 from tkinter import font
 import pg8000
+import math
 
 #TODO: Can this be populated with a query instead? There's more items since I got 0.15 working.
 factorio_item_array = ['piercing-bullet-magazine','rocket','explosive-rocket','shotgun-shell','piercing-shotgun-shell','railgun-dart','poison-capsule','slowdown-capsule','basic-grenade','defender-capsule','distractor-capsule','destroyer-capsule','basic-electric-discharge-defense-remote','copper-plate','iron-plate','stone-brick','wood','wooden-chest','iron-stick','iron-axe','stone-furnace','boiler','steam-engine','iron-gear-wheel','electronic-circuit','basic-transport-belt','basic-mining-drill','burner-mining-drill','basic-inserter','burner-inserter','pipe','offshore-pump','copper-cable','small-electric-pole','pistol','submachine-gun','basic-bullet-magazine','basic-armor','radar','small-lamp','pipe-to-ground','assembling-machine-1','repair-pack','gun-turret','night-vision-equipment','energy-shield-equipment','energy-shield-mk2-equipment','battery-equipment','battery-mk2-equipment','solar-panel-equipment','fusion-reactor-equipment','basic-laser-defense-equipment','basic-electric-discharge-defense-equipment','basic-exoskeleton-equipment','basic-oil-processing','advanced-oil-processing','heavy-oil-cracking','light-oil-cracking','sulfuric-acid','plastic-bar','solid-fuel-from-light-oil','solid-fuel-from-petroleum-gas','solid-fuel-from-heavy-oil','sulfur','lubricant','empty-barrel','fill-crude-oil-barrel','empty-crude-oil-barrel','flame-thrower-ammo','steel-plate','long-handed-inserter','fast-inserter','smart-inserter','speed-module','speed-module-2','speed-module-3','productivity-module','productivity-module-2','productivity-module-3','effectivity-module','effectivity-module-2','effectivity-module-3','player-port','fast-transport-belt','express-transport-belt','solar-panel','assembling-machine-2','assembling-machine-3','car','straight-rail','curved-rail','diesel-locomotive','cargo-wagon','train-stop','rail-signal','heavy-armor','basic-modular-armor','power-armor','power-armor-mk2','iron-chest','steel-chest','smart-chest','wall','flame-thrower','land-mine','rocket-launcher','shotgun','combat-shotgun','railgun','science-pack-1','science-pack-2','science-pack-3','alien-science-pack','lab','red-wire','green-wire','basic-transport-belt-to-ground','fast-transport-belt-to-ground','express-transport-belt-to-ground','basic-splitter','fast-splitter','express-splitter','advanced-circuit','processing-unit','logistic-robot','construction-robot','logistic-chest-passive-provider','logistic-chest-active-provider','logistic-chest-storage','logistic-chest-requester','rocket-defense','roboport','steel-axe','big-electric-pole','substation','medium-electric-pole','basic-accumulator','steel-furnace','electric-furnace','basic-beacon','blueprint','deconstruction-planner','pumpjack','oil-refinery','engine-unit','electric-engine-unit','flying-robot-frame','explosives','battery','storage-tank','small-pump','chemical-plant','small-plane','laser-turret']
@@ -110,24 +111,39 @@ class Application:
         self.search_button = Checkbutton(self.search_frame, text="Rocket",  variable = self.factorio_item_input['rocket'], command = self.search_action).grid(row=1, column = 0, sticky=W)
 
     def search_action(self):
+        self.mult = 1
         self.current_search_results = []
         for item, var in self.factorio_item_input.items():
             if var.get():
                 print('The item to look up: ' + str(item))
                 self.current_search_results.extend(self.search_by_item(str(item)))
 
-        self.item_recusion(self.current_search_results)
+        self.tottal_items = {}
+        if len(self.current_search_results) != 0:
+            self.item_recusion(self.current_search_results)
+            print('\n..........\nfinished tree\n..........')
+            print('total raw items needed:')
+            print(self.tottal_items)
+            pass
 
-        print('\nfinished tree\n\n')
 
 
     def item_recusion(self, items):
         for item in items:
             print(item)
+            if item[0] in self.tottal_items.keys():
+                self.tottal_items[item[0]] += float(item[1])
+            else:
+                self.tottal_items[item[0]] = float(item[1])
             if item[0] == 'copper-ore' or item[0] == 'iron-ore' or item[0] == 'coal' or item[0] == 'stone' or item[0] == 'raw-wood' or item[0] == 'water' or item[0] == 'crude-oil' or item[0] == 'alien-artifact':
                 print()
             else:
+                self.mult = float(item[1])
                 additional_itesm = self.search_by_item(item[0])
+                for x in range(0,len(additional_itesm)):
+                    tmp = additional_itesm[x][1] 
+                    additional_itesm[x][1] = float(item[1]) * float(tmp)
+                    pass
                 self.item_recusion(additional_itesm)
 
 
