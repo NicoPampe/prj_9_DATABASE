@@ -3,9 +3,15 @@ file = io.open ("factorio_015_items.csv", "w")
 data = {}
 data["extend"] = function (data, t)
     for n, recipe in ipairs(t) do
+        resultCount = 1
+        if recipe["result_count"] ~= nil then
+            print("*")
+            resultCount = recipe["result_count"]
+        end
         for i, component in ipairs(recipe["ingredients"]) do
             cname = component[1] or component["name"]
             camt = component[2] or component["amount"]
+            camt = camt/resultCount
             file:write('"' .. recipe["name"] .. '","' .. cname .. '",' .. camt .. "\n")
             print('"' .. recipe["name"] .. '","' .. cname .. '",' .. camt)
         end
