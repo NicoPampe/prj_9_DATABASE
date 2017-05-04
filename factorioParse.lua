@@ -12,6 +12,9 @@ data["extend"] = function (data, t)
             cname = component[1] or component["name"]
             camt = component[2] or component["amount"]
             camt = camt/resultCount
+            if component["type"] == "fluid" then
+                camt = camt/10
+            end
             file:write(recipe["name"] .. ',' .. cname .. ',' .. camt .. "\n")
             print('"' .. recipe["name"] .. '","' .. cname .. '",' .. camt)
         end
